@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>BlueSkyHome ChatGPT Assistant</title>
+      <style>
+                * {
+                              margin: 0;
+                              padding: 0;
+                              box-sizing: border-box;
+                }
+
+                body {
+                              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                              min-height: 100vh;
+                              display: flex;
+                              align-items: center;
+                              justify-content: center;
+                              padding: 20px;
+                }
+
+                .container {
+                              background: white;
+                              border-radius: 12px;
+                              box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                              width: 100%;
+                              max-width: 600px;
+                              padding: 40px;
+                }
+
+                header {
+                              text-align: center;
+                              margin-bottom: 30px;
+                }
+
+                h1 {
+                              color: #333;
+                              font-size: 28px;
+                              margin-bottom: 10px;
+                }
+
+                .subtitle {
+                              color: #666;
+                              font-size: 14px;
+                }
+
+                .status {
+                              background: #f5f5f5;
+                              border-left: 4px solid #667eea;
+                              padding: 15px;
+                              border-radius: 4px;
+                              margin-bottom: 20px;
+                              font-size: 14px;
+                }
+
+                .status.loading {
+                              border-left-color: #ff9800;
+                }
+
+                .status.success {
+                              border-left-color: #4caf50;
+                              background: #f1f8f4;
+                }
+
+                .status.error {
+                              border-left-color: #f44336;
+                              background: #fef5f5;
+                }
+
+                .button-group {
+                              display: flex;
+                              gap: 10px;
+                              margin-bottom: 20px;
+                }
+
+                button {
+                              flex: 1;
+                              padding: 12px 20px;
+                              border: none;
+                              border-radius: 6px;
+                              font-size: 14px;
+                              font-weight: 600;
+                              cursor: pointer;
+                              transition: all 0.3s ease;
+                }
+
+                .btn-primary {
+                              background: #667eea;
+                              color: white;
+                }
+
+                .btn-primary:hover {
+                              background: #5568d3;
+                              transform: translateY(-2px);
+                              box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+                }
+
+                .btn-secondary {
+                              background: #f5f5f5;
+                              color: #333;
+                              border: 1px solid #ddd;
+                }
+
+                .btn-secondary:hover {
+                              background: #efefef;
+                }
+
+                .response-box {
+                              background: #f9f9f9;
+                              border: 1px solid #e0e0e0;
+                              border-radius: 6px;
+                              padding: 15px;
+                              margin-top: 20px;
+                              min-height: 100px;
+                              max-height: 300px;
+                              overflow-y: auto;
+                              font-size: 14px;
+                              line-height: 1.6;
+                              color: #333;
+                }
+
+                .response-box.empty {
+                              display: none;
+                }
+
+                .loader {
+                              display: inline-block;
+                              width: 8px;
+                              height: 8px;
+                              border-radius: 50%;
+                              background: #667eea;
+                              animation: pulse 1.5s ease-in-out infinite;
+                }
+
+                @keyframes pulse {
+                              0%, 100% { opacity: 1; }
+                              50% { opacity: 0.5; }
+                }
+            </style>
+  </head>
+  <body>
+        <div class="container">
+                  <header>
+                                <h1>BlueSkyHome Assistant</h1>
+                              <p class="subtitle">ChatGPT-Powered Smart Home Control</p>p>
+                  </header>
+                
+                <div id="status" class="status">
+                            Status: Ready
+                </div>div>
+                
+                <div class="button-group">
+                            <button class="btn-primary" onclick="testConnection()">Test Connection</button>button>
+                            <button class="btn-secondary" onclick="openConfig()">Configure API Key</button>button>
+                </div>div>
+                
+                <div id="responseBox" class="response-box empty"></div>div>
+        </div>div>
+      
+      <script>
+                async function testConnection() {
+                              const statusEl = document.getElementById('status');
+                              const responseBox = document.getElementById('responseBox');
+
+                              statusEl.className = 'status loading';
+                              statusEl.innerHTML = 'Status: Testing connection <span class="loader"></span>';
+
+                              try {
+                                                const response = await fetch('/api/test', {
+                                                                      method: 'GET',
+                                                                      headers: {
+                                                                                                'Content-Type': 'application/json'
+                                                                        }
+                                                });
+
+                                                const data = await response.json();
+
+                                                if (data.success) {
+                                                                      statusEl.className = 'status success';
+                                                                      statusEl.innerHTML = '✓ Status: Connected to ChatGPT';
+                                                                      responseBox.className = 'response-box';
+                                                                      responseBox.innerHTML = `<strong>Connection Test Successful:</strong><br><br>${data.message || 'ChatGPT API is responding correctly.'}`;
+                                                } else {
+                                                                      statusEl.className = 'status error';
+                                                                      statusEl.innerHTML = '✗ Status: Connection Failed';
+                                                                      responseBox.className = 'response-box';
+                                                                      responseBox.innerHTML = `<strong>Error:</strong> ${data.message || 'Failed to connect to ChatGPT API'}`;
+                                                }
+                              } catch (error) {
+                                                statusEl.className = 'status error';
+                                                statusEl.innerHTML = '✗ Status: Error';
+                                                responseBox.className = 'response-box';
+                                                responseBox.innerHTML = `<strong>Error:</strong> ${error.message}`;
+                              }
+                }
+
+                function openConfig() {
+                              window.location.href = '/config.html';
+                }
+
+                // Auto-load status on page load
+                window.addEventListener('load', () => {
+                              const statusEl = document.getElementById('status');
+                              statusEl.innerHTML = 'Status: Ready to test connection';
+                });
+      </script>
+  </body>
+</html>html>
+      </script></h1>
+                  </header>
+  </body>
+      </style></title>
+  </head>
