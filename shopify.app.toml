@@ -1,0 +1,8 @@
+scopes = "write_products,read_products,write_online_store_pages,read_online_store_pages"
+
+[build]
+dir = "dist"
+command = "echo 'No build step required'"
+
+[webhooks]
+api_version = "2026-01"
